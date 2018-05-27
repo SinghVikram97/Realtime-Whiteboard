@@ -10,6 +10,16 @@ app.use('/',express.static(path.join(__dirname,'public')));
 const server=http.createServer(app);
 const io=socketio(server);
 
+io.on('connection',(socket => {
+
+   socket.on('draw',(data)=>{
+
+       console.log(data);
+
+   })
+
+}));
+
 server.listen(4444,()=>{
     console.log('Server started on http://localhost:4444');
 });

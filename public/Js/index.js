@@ -23,6 +23,12 @@ $(document).ready(function () {
         context.lineTo(x2,y2);
         context.stroke();
         context.closePath();
+
+        const emitToServer={
+            x1,x2,y1,y2
+        };
+
+        socket.emit('draw',emitToServer);
     }
 
     canvas.addEventListener('mousedown',onMouseDown);
