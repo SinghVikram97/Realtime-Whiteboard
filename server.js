@@ -15,7 +15,7 @@ io.on('connection',(socket => {
    socket.on('draw',(data)=>{
 
 
-       console.log(data);
+       // console.log(data);
 
        io.emit('draw',(data));
 
@@ -23,6 +23,6 @@ io.on('connection',(socket => {
 
 }));
 
-server.listen(4444,()=>{
+server.listen(process.env.PORT || 4444,()=>{
     console.log('Server started on http://localhost:4444');
 });
