@@ -11,6 +11,14 @@ $(document).ready(function () {
     const createSession=$('#createSession');
     const joinSession=$('#joinSession');
     const inputSessionId=$('#inputSessionId');
+    const clear=$('.fa_custom');
+
+
+    clear.click(function () {
+
+        context.clearRect(0, 0, canvas.width, canvas.height);
+
+    });
 
     createSession.click(function () {
 

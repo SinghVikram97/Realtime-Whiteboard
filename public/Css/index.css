@@ -35,3 +35,9 @@ html, body {
     display: inline-block;
     color: #212121;
 }
+.fa_custom{
+    color: #32383e;
+    font-size: 30px;
+    position: absolute;
+    bottom: +100px;
+}
