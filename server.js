@@ -42,7 +42,15 @@ io.on('connection',(socket => {
        });
 
 
-   })
+   });
+
+   // Same as 'draw' just emit to only room members
+   socket.on('drawInSession',(data)=>{
+
+       socket.broadcast.to(data.sessionId).emit('drawInSession',data);
+
+
+   });
 
 }));
 

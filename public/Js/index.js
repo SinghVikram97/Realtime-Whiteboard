@@ -21,8 +21,10 @@ $(document).ready(function () {
 
     // 1. Drawing without session
     socket.on('draw',drawFromServer);
-    // 2. Drawing with session
+    // 2. Creating a session
     socket.on('sessionCreated',sessionCreated);
+    // 3. Drawing with session
+    socket.on('drawInSession',drawInSession);
 
     let current={};
     let drawing=false;
@@ -56,7 +58,15 @@ $(document).ready(function () {
             x1,x2,y1,y2
         };
 
-        socket.emit('draw',emitToServer);
+        // If a sessionId exits
+        if(currentSocket.sessionId){
+
+            // Add a sessionId for server for joining sockets into that room
+            emitToServer.sessionId=currentSocket.sessionId;
+
+        }
+
+        socket.emit(currentSocket.emitTo,emitToServer);
     }
 
     canvas.addEventListener('mousedown',onMouseDown);
@@ -104,6 +114,8 @@ $(document).ready(function () {
     function sessionCreated(data) {
 
         // 1. Remove listening to draw
+        // If we draw on any other socket it will not show on this socket(In which session created)
+        // But this socket will still emit to other sockets
         socket.off('draw');
 
         // 2. Store it's sessionId on client side and where it should emit instead of draw
@@ -115,10 +127,31 @@ $(document).ready(function () {
             '            </div>\n' +
             '            <div class="col-2 font pt-1">\n' +
             '                SessionId:'+data.sessionId+'\n' +
-            '            </div>')
+            '            </div>');
 
         // 4. Clear canvas
         context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    
+    function drawInSession() {
+
+        if(drawing){
+
+            drawLine(data.x1-4,data.y1+70,data.x2-4,data.y2+70,false);
+            // Don't emit again as it will result in infinite loop
+
+        }
+        else{
+
+            drawing=true;
+            // data.y1+70 as 70 will get subtracted twice because we are sending y1=y1-70 to server
+            // And again in drawLine we will subtract 70
+            drawLine(data.x1-4,data.y1+70,data.x2-4,data.y2+70,false);
+            // Don't emit again as it will result in infinite loop
+            drawing=false;
+            // We need to set it to false again. Else won't stop on mouse up
+        }
+
     }
 
 
