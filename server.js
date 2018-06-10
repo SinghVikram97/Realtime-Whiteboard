@@ -17,7 +17,10 @@ io.on('connection',(socket => {
 
        // console.log(data);
 
-       io.emit('draw',(data));
+       // Send to all clients except sender
+       socket.broadcast.emit('draw', (data));
+
+       // io.emit('draw',(data));
 
    })
 
