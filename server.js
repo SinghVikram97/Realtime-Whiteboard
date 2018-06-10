@@ -2,6 +2,7 @@ const express=require('express');
 const http=require('http');
 const socketio=require('socket.io');
 const path=require('path');
+const crypto=require('crypto');
 
 const app=express();
 
@@ -10,17 +11,36 @@ app.use('/',express.static(path.join(__dirname,'public')));
 const server=http.createServer(app);
 const io=socketio(server);
 
+const sessionIds=[];
+
 io.on('connection',(socket => {
 
    socket.on('draw',(data)=>{
 
-
-       // console.log(data);
-
        // Send to all clients except sender
        socket.broadcast.emit('draw', (data));
 
-       // io.emit('draw',(data));
+   });
+
+   socket.on('createSession',()=>{
+
+       // Create a new session
+       // 1. Create a new sessionId
+        const newId=crypto.randomBytes(2).toString("hex");
+
+       // 2. Add it to list of sessionIds
+       sessionIds.push(newId);
+
+       // 3. Join the socket which initiated this req to this room
+       socket.join(newId);
+
+       // 4. Emit a new event for front-end
+       socket.emit('sessionCreated',{
+
+           sessionId:newId
+
+       });
+
 
    })
 

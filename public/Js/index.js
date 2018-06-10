@@ -2,13 +2,27 @@ const socket=io();
 
 $(document).ready(function () {
 
+    let currentSocket={
+        emitTo:'draw'
+    };
+
     const canvas=document.getElementById('canvas');
     const context = canvas.getContext('2d');
+    const createSession=$('#createSession');
+
+    createSession.click(function () {
+
+        socket.emit('createSession');
+
+    });
 
     canvas.width=window.innerWidth;
     canvas.height=window.innerHeight;
 
+    // 1. Drawing without session
     socket.on('draw',drawFromServer);
+    // 2. Drawing with session
+    socket.on('sessionCreated',sessionCreated);
 
     let current={};
     let drawing=false;
@@ -25,6 +39,8 @@ $(document).ready(function () {
         y2 -= 70;
         x1 += 4;
         x2 += 4;
+
+
         context.beginPath();
         context.moveTo(x1,y1);
         context.lineTo(x2,y2);
@@ -85,5 +101,26 @@ $(document).ready(function () {
 
 
     }
-    
+    function sessionCreated(data) {
+
+        // 1. Remove listening to draw
+        socket.off('draw');
+
+        // 2. Store it's sessionId on client side and where it should emit instead of draw
+        currentSocket.sessionId=data.sessionId;
+        currentSocket.emitTo='drawInSession';
+
+        // 3. Show sessionId on frontEnd
+        $('.header').empty().append('<div class="col">\n' +
+            '            </div>\n' +
+            '            <div class="col-2 font pt-1">\n' +
+            '                SessionId:'+data.sessionId+'\n' +
+            '            </div>')
+
+        // 4. Clear canvas
+        context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+
+
 });
