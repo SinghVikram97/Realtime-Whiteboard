@@ -1,8 +1,37 @@
-body {
+html, body {
+    height: 100%;
     margin: 0;
+    padding: 0;
+    overflow: hidden;
 }
-
+.container-fluid {
+    height: 100%;
+    padding: 0;
+}
+.canvasRow{
+    height: 100%;
+}
 #canvas {
     height: 100%;
     width: 100%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+}
+
+.header {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.26);
+    min-height: 56px;
+    height: 70px;
+    transition: min-height 0.3s;
+    padding-top: 0.1%;
+}
+.font{
+    font-weight: 300;
+    font-size: 1.4em;
+    margin: 0.5em 0.25em;
+    display: inline-block;
+    color: #212121;
 }

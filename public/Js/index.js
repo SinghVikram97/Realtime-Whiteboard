@@ -20,7 +20,11 @@ $(document).ready(function () {
             return;
         }
 
-
+        // Canvas offsets
+        y1 -= 70;
+        y2 -= 70;
+        x1 += 4;
+        x2 += 4;
         context.beginPath();
         context.moveTo(x1,y1);
         context.lineTo(x2,y2);
