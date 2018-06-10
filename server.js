@@ -25,6 +25,7 @@ io.on('connection',(socket => {
    socket.on('createSession',()=>{
 
        // Create a new session
+
        // 1. Create a new sessionId
         const newId=crypto.randomBytes(2).toString("hex");
 
@@ -51,6 +52,24 @@ io.on('connection',(socket => {
 
 
    });
+
+    // Joining a room
+    socket.on('joinSession',(data)=>{
+
+        let sessionId=data.sessionId;
+
+        // Check if it's a valid sessionId in sessionIds array
+        if(sessionIds.includes(sessionId)){
+
+            // Join the room
+            socket.join(sessionId);
+
+            socket.emit('joinSession',(data));
+
+        }
+
+
+    })
 
 }));
 

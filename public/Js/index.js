@@ -9,10 +9,24 @@ $(document).ready(function () {
     const canvas=document.getElementById('canvas');
     const context = canvas.getContext('2d');
     const createSession=$('#createSession');
+    const joinSession=$('#joinSession');
+    const inputSessionId=$('#inputSessionId');
 
     createSession.click(function () {
 
         socket.emit('createSession');
+
+    });
+
+    joinSession.click(function () {
+
+        let sessionId=inputSessionId.val();
+        inputSessionId.val('');
+
+        socket.emit('joinSession',{
+            sessionId:sessionId
+        })
+
 
     });
 
@@ -25,6 +39,8 @@ $(document).ready(function () {
     socket.on('sessionCreated',sessionCreated);
     // 3. Drawing with session
     socket.on('drawInSession',drawInSession);
+    // 4. Joining a session
+    socket.on('joinSession',joinSessionFunc);
 
     let current={};
     let drawing=false;
@@ -133,7 +149,9 @@ $(document).ready(function () {
         context.clearRect(0, 0, canvas.width, canvas.height);
     }
     
-    function drawInSession() {
+    function drawInSession(data) {
+
+
 
         if(drawing){
 
@@ -154,6 +172,31 @@ $(document).ready(function () {
 
     }
 
+    // Same as session created function
+    function joinSessionFunc(data) {
 
+
+        console.log(data.sessionId);
+
+        // 1. Remove listening to draw
+        // If we draw on any other socket it will not show on this socket(In which session created)
+        // But this socket will still emit to other sockets
+        socket.off('draw');
+
+        // 2. Store it's sessionId on client side and where it should emit instead of draw
+        currentSocket.sessionId=data.sessionId;
+        currentSocket.emitTo='drawInSession';
+
+        // 3. Show sessionId on frontEnd
+        $('.header').empty().append('<div class="col">\n' +
+            '            </div>\n' +
+            '            <div class="col-2 font pt-1">\n' +
+            '                SessionId:'+data.sessionId+'\n' +
+            '            </div>');
+
+        // 4. Clear canvas
+        context.clearRect(0, 0, canvas.width, canvas.height);
+
+    }
 
 });
