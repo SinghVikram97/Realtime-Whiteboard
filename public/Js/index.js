@@ -69,13 +69,15 @@ $(document).ready(function () {
 
         if(drawing){
 
-            drawLine(data.x1,data.y1,data.x2,data.y2,false);
+            drawLine(data.x1-4,data.y1+70,data.x2-4,data.y2+70,false);
             // Don't emit again as it will result in infinite loop
 
         }
          else{
             drawing=true;
-            drawLine(data.x1,data.y1,data.x2,data.y2,false);
+            // data.y1+70 as 70 will get subtracted twice because we are sending y1=y1-70 to server
+            // And again in drawLine we will subtract 70
+            drawLine(data.x1-4,data.y1+70,data.x2-4,data.y2+70,false);
             // Don't emit again as it will result in infinite loop
             drawing=false;
             // We need to set it to false again. Else won't stop on mouse up
